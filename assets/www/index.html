@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>PhoneGap</title>
+<script type="text/javascript" charset="utf-8" src="phonegap-1.3.0.js"></script>
+<script type="text/javascript" charset="utf-8" src="wifi.js"></script>
+<script type="text/javascript" src="barcodescanner.js"></script>
+<script type="text/javascript" src="facebook.js"></script>
+<script type="text/javascript" charset="utf-8">
+
+
+function onBodyLoad()
+{
+    document.addEventListener("deviceready",onDeviceReady,false);
+}
+
+
+
+function onDeviceReady()
+{
+
+
+ //------------------------------------------------------ listDevices example ------------------------------------------------------
+    
+    var btnListDevices = document.getElementById("scan");
+    btnListDevices.onclick = function() {
+window.plugins.wifi.Scan(null,
+function(r){printResult(r)},
+function(e){log(e)}
+);
+}
+ 
+
+ 	   var btn = document.getElementById("barcode");
+
+ 	   btn.onclick = function() {
+    
+    window.plugins.barcodeScanner.scan( function(result) {
+    	//alert (result.text);
+//         String s = "We got a barcode\n" +
+//                   "Result: " + result.text + "\n" +
+//                   "Format: " + result.format + "\n" +
+//                   "Cancelled: " + result.cancelled;
+         printScanResult(result.text);
+    }, function(error) {
+        alert("Scanning failed: " + error);
+    }
+ );
+
+ 	    }
+
+    //-----------
+    
+      var btn = document.getElementById("auth");
+
+	   btn.onclick = function() {   
+ 	  appId = 145742942138990 // this is your facebook app id
+
+ 	 window.plugins.facebook.authorize(appId ,function(res){
+ 	     alert(res.name); // the authorized users name
+
+ 	     window.plugins.facebook.request("me/likes" ,function(res){
+ 	         alert(res.data[0].name); // the name of the first 'liked' item
+ 	     });
+
+ 	 });
+	   }
+	   
+    
+
+}
+
+
+
+function printScanResult(scanresult){
+	var htmlText ="";
+	htmlText = "<h3>" + scanresult +"</h3>";
+   document.getElementById("result").innerHTML=htmlText;
+}
+
+
+
+
+
+function printResult(resultadoString){
+var htmlText ="";
+var i=0;
+//alert(resultadoString);
+
+var resultado = eval(resultadoString);
+//alert(resultadoString);
+
+for(i=0;i<resultado.length;i++)
+{
+htmlText=htmlText+"<ul><li>Name Device: "+resultado[i].ssid+"</li></ul>";
+htmlText=htmlText+"<ul><li>Address Device: "+resultado[i].address+"</li></ul>";
+}
+   document.getElementById("result").innerHTML=htmlText;
+}
+
+
+</script>
+</head>
+
+
+<body onload="onBodyLoad()">
+
+    <input id="scan" type="button" value="Scan WIFI" />
+     <input id="barcode" type="button" value="Scan Barcode" />
+     <input id="auth" type="button" value="FB Auth" />
+
+    <hr>
+    
+    <div id="result"></div>
+    
+    <hr>
+
+    
+</body>
+</html>

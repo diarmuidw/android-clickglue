@@ -1,0 +1,122 @@
+<!DOCTYPE HTML>
+
+<html>
+
+     <head>
+
+          <title>PhoneGap</title>
+
+     </head>
+
+     <body>
+
+          <!-- Button -->
+
+          <input  id="list-sdcard" type="button" value="List SDCard Contents"  />
+
+          <hr>
+
+ 
+
+          <!-- Place Holder for placing the SD Card Listing -->
+
+          <div id="result"></div>
+
+ 
+
+          <hr>
+
+ 
+
+          <script type="text/javascript" src="phonegap-1.3.0.js"></script>
+
+          <script type="text/javascript" src="directorylisting.js"></script>
+          <script type="text/javascript" src="barcodescanner.js"></script>
+          <script type="text/javascript" >
+
+//    document.addEventListener('deviceready', function() {
+
+//    var btn = document.getElementById("list-sdcard");
+
+//    btn.onclick = function() {
+
+//     window.plugins.directorylisting.list(    "/sdcard",
+
+// function(r){printResult(r)},
+
+// function(e){console.log(e)}
+
+// );
+
+//     }
+
+//     btn.disabled=false;
+
+//   }, true);
+
+   
+   document.addEventListener('deviceready', function() {
+
+	   var btn = document.getElementById("list-sdcard");
+
+	   btn.onclick = function() {
+   
+   window.plugins.barcodeScanner.scan( function(result) {
+       alert("We got a barcode\n" +
+                 "Result: " + result.text + "\n" +
+                 "Format: " + result.format + "\n" +
+                 "Cancelled: " + result.cancelled);
+   }, function(error) {
+       alert("Scanning failed: " + error);
+   }
+);
+
+	    }
+
+	    btn.disabled=false;
+
+	  }, true);
+
+ 
+
+ function printResult(fileInfo){
+
+  var innerHtmlText=getHtml(fileInfo);    
+
+  document.getElementById("result").innerHTML=innerHtmlText;
+
+ }
+
+ 
+
+ function getHtml(fileInfo){
+
+ var htmlText="<ul><li>"+fileInfo.filename;
+
+ if(fileInfo.children){
+
+ 
+
+ for(var index=0;index<fileInfo.children.length;index++){
+
+ htmlText=htmlText+getHtml(fileInfo.children[index]);
+
+ }
+
+ }
+
+ htmlText=htmlText+"</li></ul>";
+
+ return htmlText;
+
+ 
+
+ } 
+
+          </script>
+
+ 
+
+     </body>
+
+</html>
